@@ -52,6 +52,19 @@ public class FoodDAO{
 		}
 	}
 
+	public Vector<FoodDTO> getFoodList() throws SQLException{
+		String sql = "select * from food";
+		try{
+			connect();
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			Vector<FoodDTO> list = makeList(rs);
+			return list;
+		}finally{
+			close();
+		}
+	}
+
 	public Vector<FoodDTO> makeList(ResultSet rs) throws SQLException {
 	      	// ResultSet -> Vector<FoodDTO> º¯È¯
 	      	Vector<FoodDTO> list = new Vector<FoodDTO>();
