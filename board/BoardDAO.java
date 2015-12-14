@@ -120,8 +120,7 @@ public class BoardDAO {
 			close();
 		}
 	}
-	public boolean insertBoard(MultipartRequest mr) 
-															throws SQLException{
+	public boolean insertBoard(MultipartRequest mr) throws SQLException{
 		String sql = "select max(ref) from board";
 		try{
 			connect();
@@ -326,7 +325,7 @@ public class BoardDAO {
 	
 	//boolean result = bdao.deleteBoard(no);
 	public boolean deleteBoard(int num) throws SQLException{
-		String sql = "delete board where num = ?";
+		String sql = "delete from board where num = ?";
 		try{
 			connect();
 			ps = con.prepareStatement(sql);
@@ -338,7 +337,29 @@ public class BoardDAO {
 			close();
 		}
 	}
-	
+	public boolean editBoard(MultipartRequest mr) throws SQLException{
+		String sql ="update board set title=?, content=?, filename=?, filesize=? "
+				+ "where num=?";
+		try{
+			connect();
+			ps = con.prepareStatement(sql);
+			ps.setString(1, mr.getParameter("title"));
+			ps.setString(2, mr.getParameter("content"));
+			ps.setString(3, mr.getFilesystemName("filename"));
+			int filesize = 0;
+			java.io.File file = mr.getFile("filename");
+			if(file != null){
+				filesize = (int)file.length();
+			}
+			ps.setInt(4, filesize);
+			ps.setInt(5, Integer.parseInt(mr.getParameter("num")));
+			int result = ps.executeUpdate();
+			if(result>0) return true;
+			else return false;
+		}finally{
+			close();
+		}
+	}
 	//boolean result = bdao.editBoard(bdto);
 	public boolean editBoard(BoardDTO bdto) throws SQLException{
 		String sql ="update board set title=?, content=? "
