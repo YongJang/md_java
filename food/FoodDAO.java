@@ -65,6 +65,21 @@ public class FoodDAO{
 		}
 	}
 	
+	public int getRatebyNum(int num) throws SQLException{
+		String tempNum = Integer.toString(num);
+		String sql = "select * from liked where num=?";
+		try{
+			connect();
+			ps = con.prepareStatement(sql);
+			ps.setString(1, tempNum);
+			rs = ps.executeQuery();
+			Vector<FoodDTO> list = makeList(rs);
+			return list.size();
+		}finally{
+			close();
+		}
+	}
+	
 	public Vector<FoodDTO> getFoodListbyRate() throws SQLException{
 		String sql = "select * from food order by rate desc";
 		try{
@@ -225,7 +240,7 @@ public class FoodDAO{
 	
 	public Vector<FoodDTO> getFoodListwithName(String name) throws SQLException{
 		String tempName = name;
-		String sql = "select * from food where name like '%"+tempName+"%'";
+		String sql = "select * from food where name like '"+"%"+tempName+"%'";
 		try{
 			connect();
 			ps = con.prepareStatement(sql);
